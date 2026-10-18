@@ -1,9 +1,19 @@
 #include<stdio.h>
 #include"set_array.h"
+#include"set_linklist.h"
 
 void display(const strArrset *set){
     for(int i=0;i<set->length;i++){
         printf("%s\n",set->data[i]);
+    }
+    printf("\n");
+}
+
+void display_list(const strListset *set){
+    const strNode *cur=set->head;
+    while(cur!=NULL){
+        printf("%s\n",cur->data);
+        cur=cur->next;
     }
     printf("\n");
 }
@@ -133,8 +143,101 @@ void test_set_operations(){
            strset_size(&a),strset_size(&b));
 }
 
+void demo_list(){
+    strListset set,a,b,empty,res;
+    strlist_init(&set);
+    strlist_init(&a);
+    strlist_init(&b);
+    strlist_init(&empty);
+    strlist_init(&res);
+
+    printf("链表初始化长度%d（预期0）\n",strlist_size(&set));
+    strlist_add(&set,"tail");
+    int x=strlist_add(&set,"tail");
+    printf("链表重复添加返回值%d，长度%d（预期1，1）\n",x,strlist_size(&set));
+    strlist_add(&set,"middle");
+    strlist_add(&set,"head");
+    printf("链表寻找middle：%d，寻找missing：%d（预期1，0）\n",
+           strlist_exist(&set,"middle")!=-1,strlist_exist(&set,"missing")!=-1);
+    display_list(&set);
+
+    x=strlist_remove(&set,"missing");
+    printf("删除不存在节点返回值%d，长度%d（当前实现预期-1，3）\n",
+           x,strlist_size(&set));
+
+    x=strlist_remove(&set,"middle");
+    printf("删除中间节点返回值%d，长度%d（当前实现预期0，2）\n",x,strlist_size(&set));
+    x=strlist_remove(&set,"head");
+    printf("删除头节点返回值%d，长度%d（当前实现预期0，1）\n",x,strlist_size(&set));
+    x=strlist_remove(&set,"tail");
+    printf("删除尾节点返回值%d，长度%d（当前实现预期0，0）\n",x,strlist_size(&set));
+
+    char longstr[MAX_TEXT_SIZE+1];
+    for(int i=0;i<MAX_TEXT_SIZE;i++){
+        longstr[i]='A';
+    }
+    longstr[MAX_TEXT_SIZE]='\0';
+    x=strlist_add(&set,longstr);
+    printf("链表超长字符串返回值%d，长度%d（预期-2，0）\n",x,strlist_size(&set));
+
+    strlist_add(&a,"a");
+    strlist_add(&a,"b");
+    strlist_add(&b,"b");
+    strlist_add(&b,"c");
+
+    printf("链表集合A：\n");
+    display_list(&a);
+    printf("链表集合B：\n");
+    display_list(&b);
+    printf("链表A是否为B的子集：%d（预期0）\n",strlist_subset(&a,&b));
+    printf("链表A是否为A的子集：%d（预期1）\n",strlist_subset(&a,&a));
+    printf("链表空集是否为A的子集：%d（预期1）\n",strlist_subset(&empty,&a));
+
+    x=strlist_union(&a,&b,&res);
+    printf("链表并集返回值%d，长度%d（预期0，3）\n",x,strlist_size(&res));
+    if(x==0){
+        display_list(&res);
+    }
+
+    x=strlist_intersection(&a,&b,&res);
+    printf("链表交集返回值%d，长度%d（预期0，1）\n",x,strlist_size(&res));
+    if(x==0){
+        display_list(&res);
+    }
+
+    x=strlist_diff(&a,&b,&res);
+    printf("链表A-B返回值%d，长度%d（预期0，1）\n",x,strlist_size(&res));
+    if(x==0){
+        display_list(&res);
+    }
+    x=strlist_diff(&b,&a,&res);
+    printf("链表B-A返回值%d，长度%d（预期0，1）\n",x,strlist_size(&res));
+    if(x==0){
+        display_list(&res);
+    }
+
+    x=strlist_diff(&a,&a,&res);
+    printf("链表A-A返回值%d，长度%d（预期0，0）\n",x,strlist_size(&res));
+    x=strlist_union(&a,&empty,&res);
+    printf("链表A与空集的并集：返回值%d，长度%d（预期0，2）\n",
+           x,strlist_size(&res));
+    x=strlist_intersection(&a,&empty,&res);
+    printf("链表A与空集的交集：返回值%d，长度%d（预期0，0）\n",
+           x,strlist_size(&res));
+    printf("链表运算后A长度%d，B长度%d（预期2，2）\n",
+           strlist_size(&a),strlist_size(&b));
+
+    strlist_clear(&set);
+    strlist_clear(&a);
+    strlist_clear(&b);
+    strlist_clear(&empty);
+    strlist_clear(&res);
+    printf("链表清空后长度%d（预期0）\n",strlist_size(&set));
+}
+
 int main(){
     demo();
     test_set_operations();
+    demo_list();
     return 0;
 }
