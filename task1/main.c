@@ -162,15 +162,15 @@ void demo_list(){
     display_list(&set);
 
     x=strlist_remove(&set,"missing");
-    printf("删除不存在节点返回值%d，长度%d（当前实现预期-1，3）\n",
+    printf("删除不存在节点返回值%d，长度%d（预期0，3）\n",
            x,strlist_size(&set));
 
     x=strlist_remove(&set,"middle");
-    printf("删除中间节点返回值%d，长度%d（当前实现预期0，2）\n",x,strlist_size(&set));
+    printf("删除中间节点返回值%d，长度%d（预期1，2）\n",x,strlist_size(&set));
     x=strlist_remove(&set,"head");
-    printf("删除头节点返回值%d，长度%d（当前实现预期0，1）\n",x,strlist_size(&set));
+    printf("删除头节点返回值%d，长度%d（预期1，1）\n",x,strlist_size(&set));
     x=strlist_remove(&set,"tail");
-    printf("删除尾节点返回值%d，长度%d（当前实现预期0，0）\n",x,strlist_size(&set));
+    printf("删除尾节点返回值%d，长度%d（预期1，0）\n",x,strlist_size(&set));
 
     char longstr[MAX_TEXT_SIZE+1];
     for(int i=0;i<MAX_TEXT_SIZE;i++){

@@ -55,12 +55,17 @@ int strlist_add(strListset *set,const char *val){
 }
 
 int strlist_remove(strListset *set,const char *val){
+
+    if(set->length==0){
+        return 0;
+    }
+
     strNode *cur=set->head;
     if(strcmp(cur->data,val)==0){
         set->head=set->head->next;
         set->length--;
         free(cur);
-        return 0;
+        return 1;
     }
     strNode *pre=cur;
     cur=cur->next;
@@ -69,12 +74,12 @@ int strlist_remove(strListset *set,const char *val){
             pre->next=cur->next;
             free(cur);
             set->length--;
-            return 0;
+            return 1;
         }
         pre=cur;
         cur=cur->next;
     }
-    return -1;
+    return 0;
 }
 
 
@@ -117,7 +122,7 @@ int strlist_intersection(const strListset *a,const strListset *b,strListset *res
         if(strlist_exist(b,cur->data)!=-1){
             int result=strlist_add(res,cur->data);
             if(result<0){
-                strlist_clear(cur);
+                strlist_clear(res);
                 return result;
             }
         }
@@ -133,7 +138,7 @@ int strlist_diff(const strListset *a,const strListset *b,strListset *res){
         if(strlist_exist(b,cur->data)==-1){
             int result=strlist_add(res,cur->data);
             if(result<0){
-                strlist_clear(cur);
+                strlist_clear(res);
                 return result;
             }
         }
