@@ -24,4 +24,12 @@ int strset_remove(strArrset *set,const char *val);
 
 void strset_clear(strArrset *set);
 
+int strset_subset(const strArrset *a,const strArrset *b);
+
+int strset_union(const strArrset *a,const strArrset *b,strArrset *res);
+
+int strset_intersection(const strArrset *a,const strArrset *b,strArrset *res);
+
+int strset_diff(const strArrset *a,const strArrset *b,strArrset *res);
+
 #endif

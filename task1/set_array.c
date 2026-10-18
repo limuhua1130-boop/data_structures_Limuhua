@@ -22,7 +22,7 @@ int strset_exist(const strArrset *set,const char *value){
 
 int strset_add(strArrset *set,const char *val){
     if(strset_exist(set,val)!=-1){
-        return 0;
+        return 1;
     }
     if(set->length>=CAPACITY){
         return -1;
@@ -31,7 +31,7 @@ int strset_add(strArrset *set,const char *val){
         return -2;
     }
     strcpy(set->data[set->length++],val);
-    return 1;
+    return 0;
 }
 
 int strset_remove(strArrset *set,const char *val){
@@ -50,4 +50,63 @@ int strset_remove(strArrset *set,const char *val){
 void strset_clear(strArrset *set){
     set->length=0;
     return;
+}
+
+int strset_subset(const strArrset *a,const strArrset *b){
+    for(int i=0;i<a->length;i++){
+        if(strset_exist(b,a->data[i])==-1){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strset_union(const strArrset *a,const strArrset *b,strArrset *res){
+    
+    strset_init(res);
+
+    for(int i=0;i<a->length;i++){
+        int result=strset_add(res,a->data[i]);
+        if(result<0){
+            return result;
+        }
+    }
+    for(int i=0;i<b->length;i++){
+        int result=strset_add(res,b->data[i]);
+        if(result<0){
+            return result;
+        }
+    }
+    return 0;
+}
+
+int strset_intersection(const strArrset *a,const strArrset *b,strArrset *res){
+    
+    strset_init(res);
+    
+    for(int i=0;i<a->length;i++){
+        if(strset_exist(b,a->data[i])!=-1){
+            int result=strset_add(res,a->data[i]);
+            if(result<0){
+                return result;
+            }
+        }
+    }
+    return 0;
+}
+
+int strset_diff(const strArrset *a,const strArrset *b,strArrset *res){
+
+    strset_init(res);
+
+    for(int i=0;i<a->length;i++){
+        if(strset_exist(b,a->data[i])==-1){
+            int result=strset_add(res,a->data[i]);
+            if(result<0){
+                return result;
+            }
+        }
+    }
+
+    return 0;
 }
