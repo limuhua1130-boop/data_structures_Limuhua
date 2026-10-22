@@ -7,8 +7,8 @@ int prepare_data(){
     int num=20;
     int seed=114514;
 
-    scanf("%s %d %d",filename,&num,&seed);
     /*
+    scanf("%s %d %d",filename,&num,&seed);
     */
    strcat(filename,".txt");
     int result=generator(filename,num,seed);
