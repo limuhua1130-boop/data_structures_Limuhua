@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include"generate_data.h"
+#include"sorter.h"
 
 int prepare_data(){
     char filename[256]="input";
@@ -27,6 +28,6 @@ int main(){
     if(x==1){
         return 0;
     }
-    
+    debug_check_run("input.txt","output.txt");
     return 0;
 }
