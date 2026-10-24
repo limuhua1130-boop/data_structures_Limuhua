@@ -70,25 +70,32 @@ int debug_check_run(const char *input_filename,const char *output_filename){
     fclose(input);
     return 0;
 }
-/*
+
+int merge_pass(const char *source_filename,const char *destination_filename,int total,int run_length){
+    
+}
 int make_runs(const char *input_filename,const char *output_filename){
     FILE *input=fopen(input_filename,"r");
     FILE *output=fopen(output_filename,"w");
     if(input==NULL||output==NULL){
+        fclose(input);
+        fclose(output);
         return -1;
     }
+    fclose(output);
     int data[MEMORY_CAP];
     int count;
-    int total=0;
     while(1){
         count=read_block(input,data,MEMORY_CAP);
         if(count<=0){
             break;
         }
         sort_block(data,count);
-        if(write_run(output_filename,data,count)){
-
+        if(write_run(output_filename,data,count)!=0){
+            fclose(input);
+            return -1;
         }
     }
+    fclose(input);
+    return count==0?count:-1;
 }
-*/
