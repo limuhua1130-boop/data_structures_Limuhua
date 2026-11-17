@@ -33,5 +33,9 @@ int main(){
         puts("make_runs failed");
         return 0;
     }
+    if(merge_pass("output.txt","temp.txt",20,5)!=0){
+        puts("First Merge Failed");
+        return 0;
+    }
     return 0;
 }
