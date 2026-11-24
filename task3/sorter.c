@@ -1,6 +1,10 @@
 #include"sorter.h"
 #include<stdlib.h>
 
+int Min(int x,int y){
+    return x>y?y:x;
+}
+
 int read_block(FILE *fp,int data[],int capacity){
     if(fp==NULL||data==NULL||capacity<=0){
         return -1;
@@ -71,7 +75,7 @@ int debug_check_run(const char *input_filename,const char *output_filename){
     fclose(input);
     return 0;
 }
-
+/*
 int merge_pass(const char *source_filename,const char *destination_filename,int total,int run_length){
     FILE *left=fopen(source_filename,"r");
     FILE *right=fopen(source_filename,"r");
@@ -129,6 +133,103 @@ int merge_pass(const char *source_filename,const char *destination_filename,int 
         if(start+2*run_length<total){
             for(int i=0;i<run_length;i++){
                 if(fscanf(left,"%d",&ignored)!=1||fscanf(right,"%d",&ignored)!=1){
+                    goto cleanup;
+                }
+            }
+        }
+    }
+    result=0;
+cleanup: 
+    if(left!=NULL){
+        fclose(left);
+    }
+    if(right!=NULL){
+        fclose(right);
+    }
+    if(out!=NULL){
+        fclose(out);
+    }
+    return result;
+}
+*/
+int merge_pass(const char *source_filename,const char *destination_filename,int total,int run_length){
+    if(total<=0||run_length<=0){
+        return -1;
+    }
+
+    FILE *left=fopen(source_filename,"r");
+    FILE *right=fopen(source_filename,"r");
+    FILE *out=fopen(destination_filename,"w");
+
+    int result=-1;
+    int ignored;
+    if(left==NULL||right==NULL||out==NULL){
+        goto cleanup;
+    }
+    int first_left=Min(total,run_length);
+    for(int i=0;i<first_left;i++){//ri->下一行
+        if(fscanf(right,"%d",&ignored)!=1){
+            goto cleanup;
+        }
+    }
+
+    int start=0;
+    while(start<total){
+        int left_count=total-start;
+        left_count=Min(left_count,run_length);
+        int right_count=total-start-left_count;
+        right_count=Min(right_count,run_length);
+        int le=left_count,ri=right_count;
+        int a,b;
+        if(fscanf(left,"%d",&a)!=1){
+            goto cleanup;
+        }
+        if(ri>0&&fscanf(right,"%d",&b)!=1){
+            goto cleanup;
+        }
+        while(le>0&&ri>0){
+            if(a<=b){
+                fprintf(out,"%d ",a);
+                le--;
+                if(le>0&&fscanf(left,"%d",&a)!=1){
+                    goto cleanup;
+                }
+            }
+            else{
+                fprintf(out,"%d ",b);
+                ri--;
+                if(ri>0&&fscanf(right,"%d",&b)!=1){
+                    goto cleanup;
+                }
+            }
+        }
+        while(le>0){
+            fprintf(out,"%d ",a);
+            le--;
+            if(le>0&&fscanf(left,"%d",&a)!=1){
+                goto cleanup;
+            }
+        }
+        while(ri>0){
+            fprintf(out,"%d ",b);
+            ri--;
+            if(ri>0&&fscanf(right,"%d",&b)!=1){
+                goto cleanup;
+            }
+        }
+
+        fputc('\n',out);
+        start+=left_count+right_count;
+        if(start<total){
+            for(int i=0;i<right_count;i++){
+                if(fscanf(left,"%d",&ignored)!=1){
+                    goto cleanup;
+                }
+            }
+            int next_left=total-start;
+            next_left=Min(next_left,run_length);
+            for(int i=0;i<next_left;i++){
+                if(fscanf(right,"%d",&ignored)!=1){
                     goto cleanup;
                 }
             }
