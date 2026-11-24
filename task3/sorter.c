@@ -1,4 +1,5 @@
 #include"sorter.h"
+#include<stdlib.h>
 
 int read_block(FILE *fp,int data[],int capacity){
     if(fp==NULL||data==NULL||capacity<=0){
@@ -146,7 +147,7 @@ cleanup:
     }
     return result;
 }
-
+/*
 int make_runs(const char *input_filename,const char *output_filename){
     FILE *input=fopen(input_filename,"r");
     FILE *output=fopen(output_filename,"w");
@@ -171,4 +172,49 @@ int make_runs(const char *input_filename,const char *output_filename){
     }
     fclose(input);
     return count==0?count:-1;
+}
+*/
+int make_runs(const char *input_filename,const char *output_filename,int capacity){
+    if(capacity<=0){
+        return -1;
+    }
+    FILE *input=fopen(input_filename,"r");
+    FILE *output=fopen(output_filename,"w");
+
+    if(input==NULL||output==NULL){
+        fclose(input);
+        fclose(output);
+        return -1;
+    }
+
+    fclose(output);
+    //int data[MEMORY_CAP];
+    int *data=malloc((size_t)capacity*sizeof(int));
+    if(data==NULL){
+        fclose(input);
+        return -1;
+    }
+    int count;
+    int result=0;
+    while(1){
+        count=read_block(input,data,capacity);
+        if(count<=0){
+            break;
+        }
+        //count=read_block(input,data,MEMORY_CAP);
+        //if(count<=0){
+        //    break;
+        //}
+        sort_block(data,count);
+        if(write_run(output_filename,data,count)!=0){
+            result=-1;
+            break;
+        }
+    }
+    free(data);
+    fclose(input);
+    if(count<0){
+        return -1;
+    }
+    return result;
 }

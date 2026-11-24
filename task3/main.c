@@ -29,10 +29,16 @@ int main(){
         return 0;
     }
     // debug_check_run("input.txt","output.txt");
+    /*
     if(make_runs("input.txt","output.txt")!=0){
         puts("make_runs failed");
         return 0;
     }
+    */
+    if(make_runs("input.txt","output.txt",5)!=0){
+        puts("make_runs failed");
+        return 0;
+    }/*
     if(merge_pass("output.txt","temp.txt",20,5)!=0){
         puts("First Merge Failed");
         return 0;
@@ -40,6 +46,6 @@ int main(){
     if(merge_pass("temp.txt","output.txt",20,10)!=0){
         puts("Second Metge Failed");
         return 0;
-    }
+    }*/
     return 0;
 }
